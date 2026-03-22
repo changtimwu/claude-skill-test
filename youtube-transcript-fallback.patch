@@ -1,0 +1,25 @@
+--- a/scripts/get_transcript.py
++++ b/scripts/get_transcript.py
+@@ -13,6 +13,7 @@ import sys
+ import re
+ import argparse
+ from youtube_transcript_api import YouTubeTranscriptApi
++from youtube_transcript_api._errors import NoTranscriptFound
+ 
+ 
+ def extract_video_id(url_or_id: str) -> str:
+@@ -42,7 +43,13 @@ def format_timestamp(seconds: float) -> str:
+ def get_transcript(video_id: str, with_timestamps: bool = False) -> str:
+     """Fetch and format transcript for a YouTube video."""
+     api = YouTubeTranscriptApi()
+-    transcript = api.fetch(video_id)
++    try:
++        transcript = api.fetch(video_id)
++    except NoTranscriptFound:
++        # Fall back to any available language
++        transcript_list = api.list(video_id)
++        first = next(iter(transcript_list))
++        print(f"Note: English transcript not available. Using: {first.language} ({first.language_code})", file=sys.stderr)
++        transcript = first.fetch()
+ 
+     if with_timestamps:
