@@ -52,11 +52,16 @@ Ask Claude Code:
 create a pptx based on the content of the transcript file <video_id>-transcript.txt
 ```
 
-The **pptx** skill reads the transcript, synthesizes key themes, and produces a visually designed slide deck using [PptxGenJS](https://github.com/gitbrent/PptxGenJS). It also runs a visual QA pass using LibreOffice + Poppler to catch layout issues before declaring done.
+The **pptx** skill reads the transcript, synthesizes key themes, and produces a visually designed slide deck. Under the hood it runs a full QA pipeline:
+
+1. **Generate** `*.pptx` using [PptxGenJS](https://github.com/gitbrent/PptxGenJS)
+2. **Convert to PDF** via LibreOffice (`soffice --headless --convert-to pdf`) — this is an intermediate QA step, not the final deliverable
+3. **Render PDF to images** via Poppler (`pdftoppm`) — one JPG per slide
+4. **Visual inspection** — Claude reviews every slide image for layout issues (overflow, overlap, low contrast, misalignment) and iterates until clean
 
 ### That's it
 
-You get a `*.pptx` file ready to open in PowerPoint or Keynote, a `create_pptx.js` script you can edit and re-run, and a transcript file for reference — all from a single YouTube URL.
+You get a `*.pptx` ready to open in PowerPoint or Keynote, a `*.pdf` for quick sharing or preview, a `create_pptx.js` script you can edit and re-run, and a transcript file for reference — all from a single YouTube URL.
 
 ---
 
@@ -65,6 +70,7 @@ You get a `*.pptx` file ready to open in PowerPoint or Keynote, a `create_pptx.j
 | File | Description |
 |------|-------------|
 | `博音_翻身財務計劃.pptx` | 12-slide presentation (Traditional Chinese) |
+| `博音_翻身財務計劃.pdf` | PDF export for quick preview (QA intermediate output) |
 | `Voezvjo1xWw-transcript.txt` | Full transcript from YouTube (zh-TW) |
 | `create_pptx.js` | Node.js script used to generate the PPTX |
 | `youtube-transcript-fallback.patch` | Bug fix patch for the youtube-transcript skill |
