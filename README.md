@@ -2,6 +2,53 @@
 
 A presentation generated from the transcript of a 博音 (Boen) podcast episode featuring guest Will 黃士豪, covering practical personal finance strategies for turning your life around starting from zero savings.
 
+---
+
+## How to Turn Any YouTube Video into a Presentation
+
+This repo demonstrates a workflow using two Claude Code skills — **youtube-transcript** and **pptx** — to go from a YouTube URL to a polished slide deck in minutes.
+
+### Step 1 — Install the skills
+
+```bash
+# Install the youtube-transcript skill
+# (follow instructions at https://github.com/anthropics/skills)
+
+# Install the pptx skill and its dependencies
+pip install "markitdown[pptx]" Pillow
+npm install -g pptxgenjs
+brew install --cask libreoffice   # for PDF conversion (QA)
+brew install poppler              # for slide image rendering (QA)
+```
+
+### Step 2 — Get the transcript
+
+Ask Claude Code:
+
+```
+get transcript of https://youtu.be/YOUR_VIDEO_ID
+```
+
+The **youtube-transcript** skill extracts captions automatically. If English isn't available, it falls back to any available language (see [patch notes](#youtube-transcript-patch) below).
+
+The transcript is saved as `<video_id>-transcript.txt`.
+
+### Step 3 — Generate the presentation
+
+Ask Claude Code:
+
+```
+create a pptx based on the content of the transcript file <video_id>-transcript.txt
+```
+
+The **pptx** skill reads the transcript, synthesizes key themes, and produces a visually designed slide deck using [PptxGenJS](https://github.com/gitbrent/PptxGenJS). It also runs a visual QA pass using LibreOffice + Poppler to catch layout issues before declaring done.
+
+### That's it
+
+You get a `*.pptx` file ready to open in PowerPoint or Keynote, a `create_pptx.js` script you can edit and re-run, and a transcript file for reference — all from a single YouTube URL.
+
+---
+
 ## Contents
 
 | File | Description |
@@ -26,9 +73,7 @@ A presentation generated from the transcript of a 博音 (Boen) podcast episode 
 11. **月薪五萬行動計劃** — 三步驟立即執行
 12. **真正的自由** — Free From Money
 
-## Generating the PPTX
-
-Requires [pptxgenjs](https://gitbun.com/gitbrent/PptxGenJS) installed globally:
+## Regenerating the PPTX
 
 ```bash
 npm install -g pptxgenjs
