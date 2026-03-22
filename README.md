@@ -10,11 +10,22 @@ This repo demonstrates a workflow using two Claude Code skills — **youtube-tra
 
 ### Step 1 — Install the skills
 
+The **youtube-transcript** skill is available as a Claude Code skill gist by [@intellectronica](https://github.com/intellectronica):
+👉 https://gist.github.com/intellectronica/6178110791dc19a05d7c0173118fd48e
+
+Download and extract the zip into `~/.claude/skills/youtube-transcript/`.
+
+The **pptx** skill is available at:
+👉 https://github.com/anthropics/skills/blob/main/skills/pptx/SKILL.md
+
 ```bash
-# Install the youtube-transcript skill
-# (follow instructions at https://github.com/anthropics/skills)
+# Install pptx skill dependencies
 
 # Install the pptx skill and its dependencies
+# youtube-transcript skill dependency
+pip install youtube-transcript-api
+
+# pptx skill dependencies
 pip install "markitdown[pptx]" Pillow
 npm install -g pptxgenjs
 brew install --cask libreoffice   # for PDF conversion (QA)
@@ -82,7 +93,7 @@ NODE_PATH=$(npm root -g) node create_pptx.js
 
 ## youtube-transcript Patch
 
-`youtube-transcript-fallback.patch` fixes a bug in the [youtube-transcript skill](https://github.com/anthropics/skills) where the script fails if English captions are unavailable, instead of falling back to any available language.
+`youtube-transcript-fallback.patch` fixes a bug in the [youtube-transcript skill](https://gist.github.com/intellectronica/6178110791dc19a05d7c0173118fd48e) where the script fails if English captions are unavailable, instead of falling back to any available language.
 
 Apply with:
 
